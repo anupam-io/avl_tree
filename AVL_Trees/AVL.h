@@ -1,5 +1,6 @@
 //**********************************************************************************************
-//*  Project    : 	AVL Trees with Optimized Insertion and Ordered Traversal Support           *
+//*  Project    : 	AVL Trees with Optimized Insertion and Deletion                            *
+//                  supported with various Traversal Features                                  *
 //*  Author     :   Awesome@ANUPAM                                                             *
 //*  Email-Id   :   akcgjc007@gmail.com                                                        *
 //**********************************************************************************************
@@ -33,23 +34,22 @@ void PreOrder(Tree_Node*);          // Value + PrO(LC) + PrO(RC)
 void PostOrder(Tree_Node*);         // PostO(LC) + PostO(RC) + Value
 void LevelOrder(Tree_Node*);        // Level Order need not to be confused with Height //Level by level not by height
 
-int InO_P(Tree_Node** t);           // Hybridized version for deleting also
-int InO_S(Tree_Node** t);           // Hybridized version for deleting also
+int InO_P(Tree_Node**);           // Hybridized version for deleting also
+int InO_S(Tree_Node**);           // Hybridized version for deleting also
 
 void Delete_My_Tree(Tree_Node*);
-int RInsert(Tree_Node**t, int num);
-int Balance_Factor(Tree_Node*);     //  | H(Left_Child) - H(Right_Child) |
-int Height_Calc(Tree_Node*);
+int RInsert(Tree_Node**, int);
+int Balance_Factor(Tree_Node*);     // | H(Left_Child) - H(Right_Child) |
+int Height_Calc(Tree_Node*);        // Height calculator
 int max(int, int);
-int Rec_H( Tree_Node*t );
-int Rec_Delete(Tree_Node** t, int num);
+int Rec_H( Tree_Node* );                   //Recursive height maintainer
+int Rec_Delete(Tree_Node**, int);     // Rec delete operation
 
-//Tree_Node* Fixing_Operation(Tree_Node**, int);   // Will manage all our Trinode Restructure operations, !!!call only in case of imbalance!!!
-Tree_Node* LL_Rotation(Tree_Node*a);        //Both nodes on left, for left heavy
-Tree_Node* LR_Rotation(Tree_Node*t);        //for left heavy
-Tree_Node* RR_Rotation(Tree_Node*a);        //Both nodes on right, for right heavy
-Tree_Node* RL_Rotation(Tree_Node*a);        //for right heavy
-Tree_Node* h_fix(Tree_Node**);
+Tree_Node* h_fix(Tree_Node**);              //Balancing Utility
+Tree_Node* LL_Rotation(Tree_Node*);        //Both nodes on left, for left heavy
+Tree_Node* LR_Rotation(Tree_Node*);        //for left heavy
+Tree_Node* RR_Rotation(Tree_Node*);        //Both nodes on right, for right heavy
+Tree_Node* RL_Rotation(Tree_Node*);        //for right heavy
 
 int max(int a, int b)
 {
@@ -87,6 +87,20 @@ void PreOrder(Tree_Node* x)
     }
 }
 
+void LevelOrder( Tree_Node* t )
+{
+    if(!t) return;
+    Enqueue(&t);
+    Tree_Node** x;
+    while(Front)
+    {
+        x = Dequeue();
+        printf(" < %d, h = %d > \n", (*x)->data, (*x)->H);
+        if( (*x)->Left_Child )   Enqueue( &(*x)->Left_Child );
+        if( (*x)->Right_Child )  Enqueue( &(*x)->Right_Child );
+    }
+}
+
 void Delete_My_Tree(Tree_Node* x)
 {
     if(!x) return;
@@ -98,7 +112,6 @@ void Delete_My_Tree(Tree_Node* x)
 
 int RInsert(Tree_Node** t ,int num)
 {
-    //if( (*t) )printf("<<%d>>\n", (*t)->data );
     if(!Root)   //Root is null
     {
         Tree_Node *x;
@@ -149,7 +162,7 @@ int RInsert(Tree_Node** t ,int num)
             return (*t)->H;
         }
     }
-    else    //t doesn't exist
+    else    //t doesn't exist, actual creation of node starts here, also Termination of Recursion
     {
         Tree_Node* x;
         x = (Tree_Node*)malloc(sizeof(Tree_Node));
@@ -176,29 +189,42 @@ int Balance_Factor(Tree_Node* t)
 
 
 
-/*Tree_Node* Fixing_Operation(Tree_Node** t, int x) //0 for left, 1 for right
+
+Tree_Node* h_fix(Tree_Node** t)
 {
-    if( x )
+    if( Balance_Factor(*t) >= 2 )
     {
-        Tree_Node* h = (*t)->Right_Child;
-        if( !h->Left_Child )                            return RR_Rotation(*t);
-        else if( !h->Right_Child )                      return RL_Rotation(*t);
-        else if( h->Right_Child->H > h->Left_Child->H ) return RR_Rotation(*t);
-        else                                            return RL_Rotation(*t);
+        if( Height_Calc((*t)->Left_Child) > Height_Calc((*t)->Right_Child)  )//L rotations
+        {
+            if( Height_Calc((*t)->Left_Child->Left_Child) > Height_Calc((*t)->Left_Child->Right_Child) )
+            {
+                return LL_Rotation(*t);
+            }
+            else
+            {
+                return LR_Rotation(*t);
+            }
+        }
+        else // R rotations
+        {
+            if( Height_Calc((*t)->Right_Child->Left_Child) < Height_Calc((*t)->Right_Child->Right_Child) )
+            {
+                return RR_Rotation(*t);
+            }
+            else
+            {
+                return RL_Rotation(*t);
+            }
+        }
     }
     else
     {
-        Tree_Node* h = (*t)->Left_Child;
-        if( !h->Right_Child )                           return LL_Rotation(*t);
-        else if( !h->Left_Child )                       return LR_Rotation(*t);
-        else if( h->Left_Child->H > h->Right_Child->H ) return LL_Rotation(*t);
-        else                                            return LR_Rotation(*t);
+        return *t;
     }
-}*/
+}
 
 Tree_Node* LL_Rotation(Tree_Node*t)
 {
-    printf("\n...LL...\n");
     Tree_Node *x = t->Left_Child;
 
     t->Left_Child  = x->Right_Child; //Mirroring of child from left to right
@@ -212,7 +238,6 @@ Tree_Node* LL_Rotation(Tree_Node*t)
 
 Tree_Node* LR_Rotation(Tree_Node*t)
 {
-    printf("\n...LR...\n");
     Tree_Node*p = t->Left_Child;
     Tree_Node *x = t->Left_Child->Right_Child;
     t->Left_Child->Right_Child = x->Left_Child;
@@ -231,11 +256,10 @@ Tree_Node* LR_Rotation(Tree_Node*t)
 
 Tree_Node* RR_Rotation(Tree_Node*a)
 {
-    printf("\n...RR...\n");
     Tree_Node *b;
     b = a->Right_Child;
 
-    a->Right_Child  = b->Left_Child; //Mirroring of child from left to right
+    a->Right_Child  = b->Left_Child; //Mirroring of child from right to left
     b->Left_Child = a; //Now b become the root, or main Node
 
     a->H = 1 + max(Height_Calc(a->Right_Child), Height_Calc(a->Left_Child));
@@ -246,7 +270,6 @@ Tree_Node* RR_Rotation(Tree_Node*a)
 
 Tree_Node* RL_Rotation(Tree_Node*t)
 {
-    printf("\n...RL...\n");
     Tree_Node*p = t->Right_Child;
     Tree_Node *x = t->Right_Child->Left_Child;
     t->Right_Child->Left_Child = x->Right_Child;
@@ -259,81 +282,11 @@ Tree_Node* RL_Rotation(Tree_Node*t)
     t->H = 1 + max( Height_Calc(t->Left_Child), Height_Calc(t->Right_Child) );
     x->H = 1 + max( p->H, t->H );
 
-    if( t->data == 65 ){ printf("\nRotation of 65\n"); printf( "<< %d %d >>\n", p->data, t->data ); }
     return x;
 }
 
 
-void Del_Node( int num )
-{
-    if( num == Root->data && (!Root->Left_Child && !Root->Right_Child) )      //Very exceptional case when only root is present
-    {
-        free(Root);
-        Root = NULL;
-        return;
-    }
-    Tree_Node *t = Root, *follow = NULL;
-    while( t )  //Searching the number
-    {
-        if( t->data==num )  break;
-        follow = t;
-        if( t->data > num ) t = t->Left_Child;
-        else t = t->Right_Child;
-    }//either found or not found
 
-    if( !t )    return; //not found, no need to further query
-    if( !follow )       //means that Root is number
-    {
-        //check for IS or IP
-        if(Root->Right_Child)
-        {
-            t->data = InO_S(&t);    //IS
-            t->H = 1 + max( Rec_H(t->Left_Child), Rec_H(t->Right_Child) );
-        }
-        else
-        {
-            t->data = InO_P(&t);                     //IP
-            t->H = 1 + max( Rec_H(t->Left_Child), Rec_H(t->Right_Child) );
-        }
-    }
-    else
-    {
-        if( !t->Left_Child && !t->Right_Child ) //is a leaf, normal deletion routine of BST
-        {
-            if( follow->Left_Child == t ) { follow->Left_Child = NULL; free(t); }
-            else { follow->Right_Child = NULL; free(t); }
-        }
-        else
-        {
-            //check for InOrder Successor or InOrder Predecessor,
-            //remember only one of them needs to be copied in this place
-            //and one of them exists definitely its not a leaf
-            if(t->Right_Child)
-            {
-                t->data = InO_S(&t);   //IS
-                t->H = 1+max(Rec_H(t->Left_Child), Rec_H(t->Right_Child) );
-            }
-            else
-            {
-                t->data = InO_P(&t);                 //IP
-                t->H = 1+max( Rec_H(t->Left_Child), Rec_H(t->Right_Child) );
-            }
-        }
-    }
-}
-
-void LevelOrder( Tree_Node* t )
-{
-    Enqueue(&t);
-    Tree_Node** x;
-    while(Front)
-    {
-        x = Dequeue();
-        printf(" < %d, h = %d > \n", (*x)->data, (*x)->H);
-        if( (*x)->Left_Child )   Enqueue( &(*x)->Left_Child );
-        if( (*x)->Right_Child )  Enqueue( &(*x)->Right_Child );
-    }
-}
 
 void Enqueue( Tree_Node **data )
 {
@@ -440,38 +393,8 @@ int InO_S(Tree_Node** t)
     }
 }
 
-Tree_Node* h_fix(Tree_Node** t)
-{
-    if( Balance_Factor(*t) >= 2 )
-    {
-        if( Height_Calc((*t)->Left_Child) > Height_Calc((*t)->Right_Child)  )//L rotations
-        {
-            if( Height_Calc((*t)->Left_Child->Left_Child) > Height_Calc((*t)->Left_Child->Right_Child) )
-            {
-                return LL_Rotation(*t);
-            }
-            else
-            {
-                return LR_Rotation(*t);
-            }
-        }
-        else // R rotations
-        {
-            if( Height_Calc((*t)->Right_Child->Left_Child) < Height_Calc((*t)->Right_Child->Right_Child) )
-            {
-                return RR_Rotation(*t);
-            }
-            else
-            {
-                return RL_Rotation(*t);
-            }
-        }
-    }
-    else
-    {
-        return *t;
-    }
-}
+
+
 
 int Height_Calc(Tree_Node* t)
 {
@@ -517,7 +440,8 @@ int Rec_Delete(Tree_Node** t, int num)
                 if( a->data > num ) a = a->Left_Child;
                 else a = a->Right_Child;
             }
-            if( follow->Left_Child == a ) { follow->Left_Child = NULL; free(a); }
+            if( !follow ){ free(Root); Root = NULL; }
+            else if( follow->Left_Child == a ) { follow->Left_Child = NULL; free(a); }
             else { follow->Right_Child = NULL; free(a); }
             return -1;
         }
@@ -533,7 +457,6 @@ int Rec_Delete(Tree_Node** t, int num)
                 (*t)->data = InO_P(t);                     //IP
                 (*t)->H = 1 + max( Rec_H((*t)->Left_Child), Rec_H((*t)->Right_Child) );
             }
-            //delete
 
             *t = h_fix(t);
             //fix operations

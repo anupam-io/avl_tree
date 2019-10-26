@@ -4,23 +4,19 @@
 
 int main()
 {
-    RInsert( &Root, 50);
-    RInsert( &Root, 75);
-    RInsert( &Root, 25);
-    RInsert( &Root, 19);
-    RInsert( &Root, 29);
-    RInsert( &Root, 88);
-    RInsert( &Root, 65);
-    RInsert( &Root, 61);
-    RInsert( &Root, 59);
-    RInsert( &Root, 71);
-    printf( "\nHello all insertions done\n\n" );
+    for(int i = 0; i<100; i++)
+        RInsert(&Root, i);
 
-    Rec_Delete(&Root, 61);
-    Rec_Delete(&Root, 59);
-
+    for(int i = 0; i<50; i++)
+        Rec_Delete(&Root, i);
 
     PreOrder(Root);
+    printf("\n\n\n");
+    PostOrder(Root);
+    printf("\n\n\n");
+    InOrder(Root);
+    printf("\n\n\n");
+    LevelOrder(Root);
 
     Delete_My_Tree(Root);
 }
