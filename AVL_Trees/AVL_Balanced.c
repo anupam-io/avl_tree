@@ -4,21 +4,33 @@
 
 int main()
 {
-    for(int i = 0; i<100; i++)
-        RInsert(&Root, i);
 
-    for(int i = 0; i<50; i++)
-        Rec_Delete(&Root, i);
-
-    PreOrder(Root);
-    printf("\n\n\n");
-    PostOrder(Root);
-    printf("\n\n\n");
-    InOrder(Root);
-    printf("\n\n\n");
-    LevelOrder(Root);
+    int temp = 0;
+    while(1)
+    {
+        CLR;
+        Graph(Root);
+        printf("\n1. Insertion\n2. Deletion\n ");
+        scan(temp);
+        if( temp == 1)
+        {
+            printf("\nEnter a number for insertion( -1 for termination ):-\t");
+            scan(temp);
+            if( temp == -1 ) break;
+            else RInsert(&Root, temp);
+        }
+        else
+        {
+            printf("\nEnter a number for deletion( -1 for termination ):-\t");
+            scan(temp);
+            if( temp == -1 ) break;
+            else Rec_Delete(&Root, temp);
+        }
+    }
 
     Delete_My_Tree(Root);
+    getchar(); // for stopping your execution file
+    return 0;
 }
 
 

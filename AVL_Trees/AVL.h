@@ -33,6 +33,7 @@ void InOrder(Tree_Node*);           // In(LC) + Value + In(RC)
 void PreOrder(Tree_Node*);          // Value + PrO(LC) + PrO(RC)
 void PostOrder(Tree_Node*);         // PostO(LC) + PostO(RC) + Value
 void LevelOrder(Tree_Node*);        // Level Order need not to be confused with Height //Level by level not by height
+void Graph(Tree_Node*t);            // Real Visualization using a tree on 2-D Screen
 
 int InO_P(Tree_Node**);           // Hybridized version for deleting also
 int InO_S(Tree_Node**);           // Hybridized version for deleting also
@@ -44,6 +45,7 @@ int Height_Calc(Tree_Node*);        // Height calculator
 int max(int, int);
 int Rec_H( Tree_Node* );                   //Recursive height maintainer
 int Rec_Delete(Tree_Node**, int);     // Rec delete operation
+int Search(Tree_Node*t, int num);                  // Search for a number
 
 Tree_Node* h_fix(Tree_Node**);              //Balancing Utility
 Tree_Node* LL_Rotation(Tree_Node*);        //Both nodes on left, for left heavy
@@ -464,4 +466,24 @@ int Rec_Delete(Tree_Node** t, int num)
             return (*t)->H;
         }
     }
+}
+
+void Graph(Tree_Node *t)
+{
+    if( !t ) return;
+    Graph(t->Left_Child);
+
+    for( int i = 0; i<t->H; i++ ){ printf("\t"); }
+    printf("%d\n", t->data);
+
+    Graph(t->Right_Child);
+}
+
+
+int Search(Tree_Node*t, int num)
+{
+    if(!t){ return 0; }
+    else if( t->data > num ){ return Search(t->Left_Child, num); }
+    else if( t->data < num ){ return Search(t->Right_Child, num); }
+    else return 1;
 }
