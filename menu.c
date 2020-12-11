@@ -1,6 +1,6 @@
-#include"AVL.h"
+#include"avl/avl.c"
 #define scan(x) scanf("%d", &x)
-#define CLR system("CLS")
+#define clear system("clear")
 
 int main()
 {
@@ -8,7 +8,7 @@ int main()
     int temp = 0;
     while(1)
     {
-        CLR;
+        clear;
         Graph(Root);
         printf("\n1. Insertion\n2. Deletion\n ");
         scan(temp);
