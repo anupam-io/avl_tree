@@ -18,6 +18,7 @@ int main(int argc, char* argv[])
 
 	const int INIT_SIZE = stoi(argv[1]);
 	const int OPERATIONS = stoi(argv[2]);
+	cout << OPERATIONS << ", ";
 #define rn rand() % INIT_SIZE
 
 	clock_t t1, t2;

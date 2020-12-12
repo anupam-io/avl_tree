@@ -9,7 +9,7 @@ int main()
     while(1)
     {
         // clear;
-        printf("--------------------");
+        printf("--------------------\n");
         Graph(my_tree->Root);
         printf("\n1. Insertion\n2. Deletion\n3. Search \n ");
         scanf("%d", &temp);
