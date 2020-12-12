@@ -7,8 +7,15 @@ void remove_t(tree* t, int num){
 	Rec_Delete(t, &t->Root, num);
 }
 
+
+int find_t(tree* t, int num){
+	return Search(t->Root, num);
+}
+
 void delete_tree(tree* t){
 	Delete_My_Tree(t->Root);
+	free(t);
+	t = NULL;
 }
 
 tree* new_tree(){
@@ -138,6 +145,7 @@ int RInsert(Tree_Node **t, int num)
 
 		return 0;
 	}
+	return 0;
 }
 
 int Balance_Factor(Tree_Node *t)
@@ -254,7 +262,7 @@ Tree_Node *RL_Rotation(Tree_Node *t)
 void Enqueue(Tree_Node **data)
 {
 	Queue *temp;
-	temp = malloc(sizeof(Queue));
+	temp = (Queue*)malloc(sizeof(Queue));
 	temp->data = data;
 	temp->next = NULL;
 
@@ -378,19 +386,19 @@ int Rec_H(Tree_Node *t)
 	}
 }
 
-int Rec_Delete(tree* this, Tree_Node **t, int num)
+int Rec_Delete(tree* the_tree, Tree_Node **t, int num)
 {
 	if (!(*t))
 		return -1;
 	if ((*t)->data > num)
 	{
-		(*t)->H = 1 + max(Rec_Delete(this, &(*t)->Left_Child, num), Height_Calc((*t)->Right_Child));
+		(*t)->H = 1 + max(Rec_Delete(the_tree, &(*t)->Left_Child, num), Height_Calc((*t)->Right_Child));
 		*t = h_fix(t);
 		return (*t)->H;
 	}
 	else if ((*t)->data < num)
 	{
-		(*t)->H = 1 + max(Rec_Delete(this, &(*t)->Right_Child, num), Height_Calc((*t)->Left_Child));
+		(*t)->H = 1 + max(Rec_Delete(the_tree, &(*t)->Right_Child, num), Height_Calc((*t)->Left_Child));
 		*t = h_fix(t);
 		return (*t)->H;
 	}
@@ -398,7 +406,7 @@ int Rec_Delete(tree* this, Tree_Node **t, int num)
 	{
 		if (!(*t)->Left_Child && !(*t)->Right_Child) //is a leaf, deletion routine
 		{
-			Tree_Node *a = this->Root, *follow = NULL;
+			Tree_Node *a = the_tree->Root, *follow = NULL;
 			while (a) //Searching the number
 			{
 				if (a->data == num)
@@ -411,8 +419,8 @@ int Rec_Delete(tree* this, Tree_Node **t, int num)
 			}
 			if (!follow)
 			{
-				free(this->Root);
-				this->Root = NULL;
+				free(the_tree->Root);
+				the_tree->Root = NULL;
 			}
 			else if (follow->Left_Child == a)
 			{
@@ -461,6 +469,8 @@ void Graph(Tree_Node *t)
 
 	Graph(t->Right_Child);
 }
+
+
 
 int Search(Tree_Node *t, int num)
 {

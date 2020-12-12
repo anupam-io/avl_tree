@@ -27,6 +27,7 @@ typedef struct tree{
 tree* new_tree();
 void add_t(tree*, int);
 void remove_t(tree*, int);
+int find_t(tree* , int);
 void delete_tree();
 
 
@@ -66,7 +67,7 @@ int Balance_Factor(Tree_Node *); 	// | H(Left_Child) - H(Right_Child) |
 int Height_Calc(Tree_Node *);		 	// Height calculator
 int max(int, int);
 int Rec_H(Tree_Node *);						 //Recursive height maintainer
-int Rec_Delete(tree* this, Tree_Node **, int); // Rec delete operation
+int Rec_Delete(tree*, Tree_Node **, int); // Rec delete operation
 int Search(Tree_Node *t, int num); // Search for a number
 
 Tree_Node *h_fix(Tree_Node **);			 //Balancing Utility
