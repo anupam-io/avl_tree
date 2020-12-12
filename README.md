@@ -18,6 +18,7 @@ But what makes an AVL tree efficient and fast
 At the time of insertions and deletions:
  - it finds the first node where one side becomes more heavy than the other
  - fix this by RR, RL, LR, LL rotations
+ - the whole tree is balanced
 
 ## Comparision with RB trees
 I have compared my implementation with the [std::set](http://www.cplusplus.com/reference/set/set/)(implemented with [red-black trees](https://en.wikipedia.org/wiki/Red%E2%80%93black_tree)) for different workloads.
