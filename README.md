@@ -14,7 +14,7 @@ But what makes an AVL tree efficient and fast
  - always achieves minimum height
    - by [rotations](https://en.wikipedia.org/wiki/Tree_rotation)
 
-## How is it perfect balanced(as all things should be)
+## How is it perfect balanced
 At the time of insertions and deletions:
  - it finds the first node where one side becomes more heavy than the other
  - fix this by RR, RL, LR, LL rotations
