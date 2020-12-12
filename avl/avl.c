@@ -1,5 +1,22 @@
 #include "avl.h"
 
+void add_t(tree* t, int num){
+	RInsert(&t->Root, num);
+}
+void remove_t(tree* t, int num){
+	Rec_Delete(t, &t->Root, num);
+}
+
+void delete_tree(tree* t){
+	Delete_My_Tree(t->Root);
+}
+
+tree* new_tree(){
+	tree* t = (tree*)malloc(sizeof(tree));
+	t->Root = NULL;
+	return t;
+}
+
 int max(int a, int b)
 {
 	if (a > b)
@@ -68,24 +85,12 @@ void Delete_My_Tree(Tree_Node *x)
 	Delete_My_Tree(x->Left_Child);
 	Delete_My_Tree(x->Right_Child);
 	free(x);
-	Root = NULL;
+	x = NULL;
 }
 
 int RInsert(Tree_Node **t, int num)
 {
-	if (!Root) //Root is null
-	{
-		Tree_Node *x;
-		x = (Tree_Node *)malloc(sizeof(Tree_Node));
-		x->data = num;
-		x->Left_Child = x->Right_Child = NULL;
-		x->H = 0;
-
-		*t = x;
-		return 0;
-	}
-
-	else if (*t) //if t exists
+	if (*t) //if t exists
 	{
 		if (num == (*t)->data) //no need to insert
 		{
@@ -373,19 +378,19 @@ int Rec_H(Tree_Node *t)
 	}
 }
 
-int Rec_Delete(Tree_Node **t, int num)
+int Rec_Delete(tree* this, Tree_Node **t, int num)
 {
 	if (!(*t))
 		return -1;
 	if ((*t)->data > num)
 	{
-		(*t)->H = 1 + max(Rec_Delete(&(*t)->Left_Child, num), Height_Calc((*t)->Right_Child));
+		(*t)->H = 1 + max(Rec_Delete(this, &(*t)->Left_Child, num), Height_Calc((*t)->Right_Child));
 		*t = h_fix(t);
 		return (*t)->H;
 	}
 	else if ((*t)->data < num)
 	{
-		(*t)->H = 1 + max(Rec_Delete(&(*t)->Right_Child, num), Height_Calc((*t)->Left_Child));
+		(*t)->H = 1 + max(Rec_Delete(this, &(*t)->Right_Child, num), Height_Calc((*t)->Left_Child));
 		*t = h_fix(t);
 		return (*t)->H;
 	}
@@ -393,7 +398,7 @@ int Rec_Delete(Tree_Node **t, int num)
 	{
 		if (!(*t)->Left_Child && !(*t)->Right_Child) //is a leaf, deletion routine
 		{
-			Tree_Node *a = Root, *follow = NULL;
+			Tree_Node *a = this->Root, *follow = NULL;
 			while (a) //Searching the number
 			{
 				if (a->data == num)
@@ -406,8 +411,8 @@ int Rec_Delete(Tree_Node **t, int num)
 			}
 			if (!follow)
 			{
-				free(Root);
-				Root = NULL;
+				free(this->Root);
+				this->Root = NULL;
 			}
 			else if (follow->Left_Child == a)
 			{

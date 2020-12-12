@@ -19,15 +19,34 @@ typedef struct Tree_Node
 	struct Tree_Node *Right_Child; 	//pointer to right child
 	int H;												 	//Storing Height
 } Tree_Node;
-Tree_Node *Root = NULL;
 
-//Queue which will store addresses of Tree_Node pointers
+typedef struct tree{
+	Tree_Node *Root;
+}tree;
+
+tree* new_tree();
+void add_t(tree*, int);
+void remove_t(tree*, int);
+void delete_tree();
+
+
+
+
+
+
+// Queue which will store addresses of Tree_Node pointers
+
 typedef struct Queue
 {
 	struct Tree_Node **data; 				//Pointer to a Tree_Node
 	struct Queue *next;			 				//Pointer to next Queue_Node
 } Queue;
+
 Queue *Front = NULL, *Rear = NULL;
+
+
+
+
 void Enqueue(Tree_Node **); 			// Enqueue function will add addresses of type Tree_Node to Queue
 Tree_Node **Dequeue();						//Dequeue will return double pointers of Tree_Node
 void Empty_My_Queue();
@@ -47,7 +66,7 @@ int Balance_Factor(Tree_Node *); 	// | H(Left_Child) - H(Right_Child) |
 int Height_Calc(Tree_Node *);		 	// Height calculator
 int max(int, int);
 int Rec_H(Tree_Node *);						 //Recursive height maintainer
-int Rec_Delete(Tree_Node **, int); // Rec delete operation
+int Rec_Delete(tree* this, Tree_Node **, int); // Rec delete operation
 int Search(Tree_Node *t, int num); // Search for a number
 
 Tree_Node *h_fix(Tree_Node **);			 //Balancing Utility
